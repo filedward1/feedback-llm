@@ -66,7 +66,7 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=port)
 
 
-# # Initialize the Ollama client
+# Initialize the Ollama client
 # client = ollama.Client()
 
 # # Define the model and the input prompt
@@ -75,7 +75,6 @@ if __name__ == "__main__":
 
 # # Send the query to the model
 # response = client.generate(model=model, prompt=prompt)
-
 
 # # Print the response from the model
 # print("Response:", response.response)
