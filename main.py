@@ -27,13 +27,13 @@ class QueryRequest(BaseModel):
 
 @app.get("/")
 async def welcome():
-    return {"message": "Welcome to the Ollama2 API!"}
+    return {"message": "Welcome to the Ollama API using mistral model!"}
 
 @app.post("/get-response")
 async def get_response(request: QueryRequest):
     try:
         # Initialize the Ollama client
-        client = ollama.Client()
+        client = ollama.Client(base_url="http://localhost:11434")
 
         # Define the model and the input prompt
         user_carbohydrates = request.carbohydrates
@@ -43,7 +43,7 @@ async def get_response(request: QueryRequest):
         recommended_protein = request.proteinAvg
         recommended_sodium = request.sodiumAvg
 
-        model = "llama2"  # Replace with the actual model name you want to use
+        model = "mistral"  # Replace with the actual model name you want to use
         prompt = """Create a two paragraph that analyzes the user intake for, 
         carbs:{user_carbohydrates}, sodium: user_sodium}, and protein:{user_protein}  
         it then compares to the recommended average intake for,
