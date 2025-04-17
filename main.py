@@ -33,7 +33,7 @@ async def welcome():
 async def get_response(request: QueryRequest):
     try:
         # Initialize the Ollama client
-        client = ollama.Client(base_url="http://localhost:11434")
+        client = ollama.Client()  # No need to pass base_url here
 
         # Define the model and the input prompt
         user_carbohydrates = request.carbohydrates
@@ -44,20 +44,20 @@ async def get_response(request: QueryRequest):
         recommended_sodium = request.sodiumAvg
 
         model = "mistral"  # Replace with the actual model name you want to use
-        prompt = """Create a two paragraph that analyzes the user intake for, 
-        carbs:{user_carbohydrates}, sodium: user_sodium}, and protein:{user_protein}  
-        it then compares to the recommended average intake for,
-        carbs:{recommended_carbohydrates}, sodium: {recommended_sodium} and protein: {recommended_protein}.
-        Based it then tells user about the common illness that may occur based on the compared values.
-        Make each paragraph short and brief but informative and make the tone academic. 
-        """ # Use the query from the request      
+        prompt = f"""Create a two paragraph that analyzes the user intake for, 
+        carbs: {user_carbohydrates}, sodium: {user_sodium}, and protein: {user_protein}.  
+        It then compares to the recommended average intake for,
+        carbs: {recommended_carbohydrates}, sodium: {recommended_sodium}, and protein: {recommended_protein}.
+        Based on this, it tells the user about the common illnesses that may occur based on the compared values.
+        Make each paragraph short and brief but informative, and make the tone academic.
+        """
 
         # Send the query to the model
         response = client.generate(model=model, prompt=prompt)
 
         # Return the response from the model
         return {"response": response.response}
-    
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
