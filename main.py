@@ -5,7 +5,7 @@ client = ollama.Client()
 
 # Define the model and the input prompt
 model = "llama2"    # Replace with the actual model name you want to use
-prompt = "give relationship advice to my friend zoe (he is a male)"
+prompt = "what is the difference between you and ChatGPT and deepseek?"
 
 # Send the query to the model
 response = client.generate(model=model, prompt=prompt)
