@@ -1,9 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
-import ollama
+from google import genai
 import os
-
 
 app = FastAPI()
 
@@ -18,63 +17,36 @@ app.add_middleware(
 )
 
 class QueryRequest(BaseModel):
-    carbohydrates: int  # User daily intake of carbohydrates
-    protein: int    # User daily intake of protein
-    sodium: int     # User daily intake of sodium
-    carbAvg: int    # Recommended daily intake of carbohydrates
-    proteinAvg: int # Recommended daily intake of protein
-    sodiumAvg: int  # Recommended daily intake of sodium
+    carbohydrates: int  
+    protein: int    
+    sodium: int     
+    carbAvg: int    
+    proteinAvg: int 
+    sodiumAvg: int  
+
 
 @app.get("/")
 async def welcome():
-    return {"message": "Welcome to the Ollama API using mistral model!"}
+    return {"message": "Welcome to the Gemini API using Flash 2.5!"}
 
 @app.post("/get-response")
 async def get_response(request: QueryRequest):
     try:
-        # Initialize the Ollama client
-        client = ollama.Client()  # No need to pass base_url here
+        client = genai.Client(api_key="AIzaSyCboLTbdj9R_DbgIzxsV2UY-v6sbjIa1cY")
 
-        # Define the model and the input prompt
-        user_carbohydrates = request.carbohydrates
-        user_protein = request.protein
-        user_sodium = request.sodium
-        recommended_carbohydrates = request.carbAvg
-        recommended_protein = request.proteinAvg
-        recommended_sodium = request.sodiumAvg
+        response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=f"Carbs: {request.carbohydrates} (avg {request.carbAvg}), "
+                            f"Protein: {request.protein} (avg {request.proteinAvg}), "
+                            f"Sodium: {request.sodium} (avg {request.sodiumAvg}). "
+                            "Give me a health recommendation."
+                )
 
-        model = "mistral"  # Replace with the actual model name you want to use
-        prompt = f"""Create a two paragraph that analyzes the user intake for, 
-        carbs: {user_carbohydrates}, sodium: {user_sodium}, and protein: {user_protein}.  
-        It then compares to the recommended average intake for,
-        carbs: {recommended_carbohydrates}, sodium: {recommended_sodium}, and protein: {recommended_protein}.
-        Based on this, it tells the user about the common illnesses that may occur based on the compared values.
-        Make each paragraph short and brief but informative, and make the tone academic.
-        """
-
-        # Send the query to the model
-        response = client.generate(model=model, prompt=prompt)
-
-        # Return the response from the model
-        return {"response": response.response}
+        return response.text
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 7860))
     uvicorn.run(app, host="0.0.0.0", port=port)
-
-
-# Initialize the Ollama client
-# client = ollama.Client()
-
-# # Define the model and the input prompt
-# model = "llama2"    # Replace with the actual model name you want to use
-# prompt = "what is the difference between you and ChatGPT and deepseek?"
-
-# # Send the query to the model
-# response = client.generate(model=model, prompt=prompt)
-
-# # Print the response from the model
-# print("Response:", response.response)
