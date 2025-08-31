@@ -177,7 +177,12 @@ async def get_response(request: QueryRequest):
                     f"Here is the analysis and include the paragraph name Health Implications: {second_paragraph}"
         )
 
-        return comparison_analysis.text, health_implication.text
+        return {
+            "feedback": {
+                "comparison_analysis": comparison_analysis.text,
+                "health_implication": health_implication.text
+            }
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
