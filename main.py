@@ -164,7 +164,7 @@ async def get_response(request: QueryRequest):
                     f"The feedback should be formal in tone yet concise and clear."
                     f"The purpose is to provide the user with insights into their nutrition and health implications.\n\n"
                     f"Do not include any introductory statement or title and provide only the paragraph without any additional commentary or text."
-                    f"Here is the analysis and include the paragraph name Comparison Analysis: {first_paragraph}"
+                    f"Here is the analysis: {first_paragraph}"
         )
 
         health_implication = client.models.generate_content(
@@ -174,7 +174,7 @@ async def get_response(request: QueryRequest):
                     f"The feedback should be formal in tone yet concise and clear."
                     f"The purpose is to provide the user with insights into their nutrition and health implications.\n\n"
                     f"Do not include any introductory statement or title and provide only the paragraph without any additional commentary or text."
-                    f"Here is the analysis and include the paragraph name Health Implications: {second_paragraph}"
+                    f"Here is the analysis: {second_paragraph}"
         )
 
         return {
